@@ -212,7 +212,7 @@ if __name__ == "__main__":
     b5=Button(m, text="Display all records", width=30, command=displayall)
     b5.pack()
 
-    b6=Button(m, text='Close', width=30, command=m.destroy())
+    b6=Button(m, text='Close', width=30, command=m.destroy)
     b6.pack()
 
     m.mainloop()
