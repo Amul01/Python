@@ -16,7 +16,7 @@ def submit(name,gstin,ent):
     if(cur.fetchall()[0][0]==name):
         Label(ent, text='Entry Successful').grid(row=3)
     conn.commit()
-def entry():
+def entry(self):
     ent=Tk()
     ent.title("New Entry!")
     ent.focus_set()
@@ -64,7 +64,7 @@ def srch(name,ent):
         #Entry(ent,text=data[2],fg="black",bg="white",state='readonly').grid(row=c,column=1)
         c=c+1
         
-def search():
+def search(self):
     ent=Tk()
     ent.title("Search by Name!")
     
@@ -114,7 +114,7 @@ def modgstin(name,gst,ent):
     query='update `gstcontact` set `GSTIN`=%s where `Name`=%s'
     cur.execute(query,(gst,name))
     srch(name,ent)
-def modify():
+def modify(self):
     ent=Tk()
     ent.title("Modify Record!")
 
@@ -142,7 +142,7 @@ def delete(name,ent):
         query='delete from gstcontact where Name=%s'
         cur.execute(query,name)
         Label(ent, text='Record Deleted!').grid(row=2)
-def remove():
+def remove(self):
     ent=Tk()
     ent.title('Delete record!')
     ent.after(1, lambda: e1.focus_force())
@@ -156,7 +156,7 @@ def remove():
     
 
 #----------------------------------------------------DISPLAY ALL
-def displayall():
+def displayall(self):
     ent=Tk()
     ent.title('All Records!')
     row_count=cur.execute('select * from gstcontact')
@@ -192,16 +192,27 @@ if __name__ == "__main__":
     l2=Label(m, text=" ", width=30)
     l2.pack()
 
+    m.bind('n',entry)
     b1=Button(m, text="New Entry", width=30, command=entry)
     b1.pack()
+
+    m.bind('s',search)
     b2=Button(m, text="Search by name", width=30, command=search)
     b2.pack()
+
+    m.bind('m',modify)
     b3=Button(m, text="Modify", width=30, command=modify)
     b3.pack()
+
+    m.bind('r',remove)
     b4=Button(m, text="Remove", width=30, command=remove)
     b4.pack()
+
+    m.bind('d',displayall)
     b5=Button(m, text="Display all records", width=30, command=displayall)
     b5.pack()
-    b6=Button(m, text='Close', width=30, command=m.destroy)
+
+    b6=Button(m, text='Close', width=30, command=m.destroy())
     b6.pack()
+
     m.mainloop()
