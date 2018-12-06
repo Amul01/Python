@@ -43,6 +43,7 @@ def entry(self):
 #--------------------------------------------------------------------------SEARCH
 def srch(name,ent):
     global cur
+    #query='select * from `gstcontact` where Name like %{0:s}%'.format(name)
     query='select * from `gstcontact` where Name=%s'
     row_count=cur.execute(query,name)
     row=cur.fetchall()
@@ -161,7 +162,12 @@ def displayall(self):
     ent.title('All Records!')
     row_count=cur.execute('select * from gstcontact')
     row=cur.fetchall()
-    
+    scrollbar = Scrollbar(ent,orient=VERTICAL)
+    scrollbar.grid(rowspan=row_count,column=3, sticky='ns')
+
+    #listbox = tk.Listbox(root, width=20, height=6)
+    #listbox.grid(row=0, column=0)
+        
     if(row_count==0):
         #print('no record')
         Label(ent, text='Record not found').grid(row=3)
@@ -169,13 +175,15 @@ def displayall(self):
         #Label(ent, text=data[0]).grid(row=index+1,column=0)
         Label(ent, text=data[1]).grid(row=index+1,column=1)
         #Label(ent, text=data[2], state='disabled').grid(row=c,column=1)
-        t=Text(ent, height=1, borderwidth=0.5, width=20)
+        t=Text(ent, height=1, borderwidth=0.5, width=20, yscrollcommand=scrollbar.set)
+        scrollbar.config(command=t.yview)
         t.tag_configure("center", justify='center')
         t.insert(END,data[2])
         t.tag_add("center", "1.0", "end")
         t.grid(row=index+1,column=2)
         t.configure(state='disabled')
         t.see(END)
+        
         #Entry(ent,text=data[2],fg="black",bg="white",state='readonly').grid(row=c,column=1)
         #c=c+1
     
