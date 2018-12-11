@@ -1,0 +1,15 @@
+#https://docs.python-guide.org/scenarios/scrape/
+
+from lxml import html
+import requests
+
+page = requests.get('http://econpy.pythonanywhere.com/ex/001.html')
+tree = html.fromstring(page.content)
+#print(tree)
+
+buyers = tree.xpath('//div[@title="buyer-name"]/text()')
+print(buyers)
+#for b in buyers: print(i)
+
+prices = tree.xpath('//span[@class="item-price"]/text()')
+print(prices)
