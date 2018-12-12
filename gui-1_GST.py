@@ -74,6 +74,7 @@ def srch(name,ent):
     allrows = cur.fetchall()
     #print(allrows)
     c=4
+    flag=0
     for i in allrows:
         #print(i[0],i[1])
         if name in i[0]:
@@ -90,6 +91,11 @@ def srch(name,ent):
             t.see(END)
             #Entry(ent,text=data[2],fg="black",bg="white",state='readonly').grid(row=c,column=1)
             c=c+1
+            flag=1
+    if(flag==0):
+        l1=Label(ent, text='Record not found')
+        l1.config(font=("Times New Roman", 14))
+        l1.grid(row=3)
 
     #row=cur.fetchall()
     #print(row)
@@ -140,7 +146,10 @@ def search(self):
 def check(name,ent):
     global cur
     row_count=cur.execute('select * from gstcontact where Name=%s',name)
-    if(row_count==0): Label(ent, text='Record not found').grid(row=2)
+    if(row_count==0):
+        l1=Label(ent, text='Record not found')
+        l1.config(font=("Times New Roman", 13))
+        l1.grid(row=2)
     else:
         l1=Label(ent, text='New Name')
         l1.config(font=("Times New Roman", 15))
