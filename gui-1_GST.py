@@ -285,26 +285,31 @@ if __name__ == "__main__":
     l2.pack()
 
     m.bind('n',entry)
+    m.bind('N',entry)
     b1=Button(m, text="New Entry", width=30, command=entry, height=2)
     b1.config(font=("Times New Roman", 15))
     b1.pack()
 
     m.bind('s',search)
+    m.bind('S',search)
     b2=Button(m, text="Search by name", width=30, command=search, height=2)
     b2.config(font=("Times New Roman", 15))
     b2.pack()
 
     m.bind('m',modify)
+    m.bind('M',modify)
     b3=Button(m, text="Modify", width=30, command=modify, height=2)
     b3.config(font=("Times New Roman", 15))
     b3.pack()
 
     m.bind('r',remove)
+    m.bind('R',remove)
     b4=Button(m, text="Remove", width=30, command=remove, height=2)
     b4.config(font=("Times New Roman", 15))
     b4.pack()
 
     m.bind('d',displayall)
+    m.bind('D',displayall)
     b5=Button(m, text="Display all records", width=30, command=displayall, height=2)
     b5.config(font=("Times New Roman", 15))
     b5.pack()
