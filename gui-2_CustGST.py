@@ -8,10 +8,10 @@ cur=conn.cursor()
 
 
 #--------------------------------------------------------------------------ENTRY
-def submit(name,gstin,ent):
+def submit(name,city,gstin,ent):
     global cur
-    query='insert into custgst (Name, GSTIN) values (%s,%s)'
-    cur.execute(query,(name,gstin))
+    query='insert into custgst (Name, City, GSTIN) values (%s,%s)'
+    cur.execute(query,(name,city,gstin))
     cur.execute('SELECT Name FROM custgst ORDER BY ID DESC LIMIT 1')
     #print(cur.fetchall()[0][0])
     if(cur.fetchall()[0][0]==name):
@@ -27,15 +27,21 @@ def entry(self):
     l1=Label(ent, text='Name', width=15)
     l1.config(font=("Times New Roman", 15))
     l1.grid(row=0) 
-    l2=Label(ent, text='GST No.', width=15)
+    l2=Label(ent, text='City', width=15)
     l2.config(font=("Times New Roman", 15))
-    l2.grid(row=1) 
+    l2.grid(row=1)
+    l3=Label(ent, text='GST No.', width=15)
+    l3.config(font=("Times New Roman", 15))
+    l3.grid(row=2)
+    
     e1 = Entry(ent, font=('Times New Roman',14))
     e2 = Entry(ent, font=('Times New Roman',14))
-    e2.bind('<Return>', lambda event: submit(e1.get(),e2.get(),ent))
+    e3 = Entry(ent, font=('Times New Roman',14))
+    e3.bind('<Return>', lambda event: submit(e1.get(),e2.get(),e3.get(),ent))
     e1.grid(row=0, column=1)
     #e1.focus_set()
     e2.grid(row=1, column=1)
+    e2.grid(row=2, column=1)
 
     #ent.bind("<FocusIn>", lambda event: handle_focus(e1,ent))
     ent.after(1, lambda: e1.focus_force())
@@ -53,9 +59,6 @@ def entry(self):
 def srch(name,ent):
     global cur
 
-
-
-
     #query='select * from `gstcontact` where Name like %%({n})%%.format(n=name)'.format(n=name)
     #row_count=cur.execute(query)
 
@@ -71,7 +74,7 @@ def srch(name,ent):
     #row_count=cur.execute(query,name)
 
     
-    row_count = cur.execute('select Name,GSTIN from custgst')
+    row_count = cur.execute('select Name,City,GSTIN from custgst')
     allrows = cur.fetchall()
     #print(allrows)
     c=4
@@ -82,12 +85,15 @@ def srch(name,ent):
             l1=Label(ent, text=i[0])
             l1.config(font=("Times New Roman", 15))
             l1.grid(row=c,column=0)
+            l2=Label(ent, text=i[1])
+            l2.config(font=("Times New Roman", 15))
+            l2.grid(row=c,column=1)
             #Label(ent, text=data[2], state='disabled').grid(row=c,column=1)
             t=Text(ent, height=1, borderwidth=1, width=20, font=("Times New Roman", 15))
             t.tag_configure("center", justify='center')
-            t.insert(END,i[1])
+            t.insert(END,i[2])
             t.tag_add("center", "1.0", "end")
-            t.grid(row=c,column=1)
+            t.grid(row=c,column=2)
             t.configure(state='disabled')
             t.see(END)
             #Entry(ent,text=data[2],fg="black",bg="white",state='readonly').grid(row=c,column=1)
