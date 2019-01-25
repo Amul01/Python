@@ -1,5 +1,6 @@
 from tkinter import *
 from functools import partial
+
 import pymysql
 
 conn=pymysql.connect(host='localhost', user='root', password='', db='gst')
@@ -309,7 +310,6 @@ if __name__ == "__main__":
     b4.pack()
 
     m.bind('d',displayall)
-    m.bind('D',displayall)
     b5=Button(m, text="Display all records", width=30, command=displayall, height=2)
     b5.config(font=("Times New Roman", 15))
     b5.pack()

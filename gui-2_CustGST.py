@@ -10,7 +10,7 @@ cur=conn.cursor()
 #--------------------------------------------------------------------------ENTRY
 def submit(name,city,gstin,agent,cno,ent):
     global cur
-    print("Value of agent = ", agent)
+    #print("Value of agent = ", agent)
     query='insert into custgst (Name, `City`, `GSTIN`, `Agent`, `Contact No.`) values (%s,%s,%s,%s,%s)'
     cur.execute(query,(name,city,gstin,agent,cno))
     cur.execute('SELECT Name FROM custgst ORDER BY ID DESC LIMIT 1')
@@ -19,6 +19,7 @@ def submit(name,city,gstin,agent,cno,ent):
         l1=Label(ent, text='Entry Successful.')
         l1.config(font=("Times New Roman", 15))
         l1.grid(row=6)
+    #print(name," ",city," ",gstin," ",agent," ",cno)
     conn.commit()
 def entry(self):
     ent=Tk()
@@ -46,7 +47,7 @@ def entry(self):
     e3 = Entry(ent, font=('Times New Roman',14))
     e4 = Entry(ent, font=('Times New Roman',14))
     e5 = Entry(ent, font=('Times New Roman',14))
-    e5.bind('<Return>', lambda event: submit(e1.get(),e2.get(),e3.get(),e4.get(),e5.get(),ent))
+    e5.bind('<Return>', lambda event:submit(e1.get(),e2.get(),e3.get(),e4.get(),e5.get(),ent))
     e1.grid(row=0, column=1)
     e2.grid(row=1, column=1)
     e3.grid(row=2, column=1)
@@ -63,8 +64,7 @@ def entry(self):
     b2.config(font=("Times New Roman", 15))
     b1.grid(row=5, column=1)
     b2.grid(row=5, column=2)
-
-
+    
 
 #--------------------------------------------------------------------------SEARCH
 def srch(text,ent,x):
@@ -88,14 +88,14 @@ def srch(text,ent,x):
     row_count = cur.execute('select Name,City,GSTIN,Agent,`Contact No.` from custgst')
     allrows = cur.fetchall()
     #print(allrows)
-    c=4
+    c=5
     flag=0
     for i in allrows:
         #print(i[0],i[1])
-        if text in i[x]:
-            l0=Label(ent, text="Name")
-            l0.config(font=("Times New Roman", 15))
-            l0.grid(row=c,column=0)
+        if text.lower() in i[x]:
+            #l0=Label(ent, text="Name")
+            #l0.config(font=("Times New Roman", 15))
+            #l0.grid(row=c,column=0)
             l1=Label(ent, text=i[0])
             l1.config(font=("Times New Roman", 15))
             l1.grid(row=c+1,column=0)
@@ -105,13 +105,14 @@ def srch(text,ent,x):
             l3=Label(ent, text=i[3])
             l3.config(font=("Times New Roman", 15))
             l3.grid(row=c+1,column=2)
-            l4=Label(ent, text=i[4])
+            if(i[4]==0): l4=Label(ent, text=" -- ")
+            else: l4=Label(ent, text=i[4])
             l4.config(font=("Times New Roman", 15))
             l4.grid(row=c+1,column=3)
             #Label(ent, text=data[2], state='disabled').grid(row=c,column=1)
             t=Text(ent, height=1, borderwidth=1, width=20, font=("Times New Roman", 15))
             t.tag_configure("center", justify='center')
-            t.insert(END,i[2])
+            t.insert(END,i[2].upper())
             t.tag_add("center", "1.0", "end")
             t.grid(row=c+1,column=5)
             t.configure(state='disabled')
@@ -162,6 +163,13 @@ def search(self):
     e2.bind('<Return>', (lambda event: srch(e2.get(),ent,1)))
     e2.grid(row=1, column=1)
 
+    l3=Label(ent, text='Enter the agent to be searched - ')
+    l3.config(font=("Times New Roman", 15))
+    l3.grid(row=2)
+    e3=Entry(ent, font=('Times New Roman',14))
+    e3.bind('<Return>', (lambda event: srch(e3.get(),ent,3)))
+    e3.grid(row=2, column=1)
+
     ent.after(1, lambda: e1.focus_force())
     
     b1=Button(ent, text='Search', width=10, command=(lambda:srch(e1.get(),ent,0)))
@@ -170,9 +178,12 @@ def search(self):
     b2=Button(ent, text='Search', width=10, command=(lambda:srch(e2.get(),ent,1)))
     b2.config(font=("Times New Roman", 15))
     b2.grid(row=1,column=2)
-    b3=Button(ent, text='Done', width=10, command=ent.destroy)
+    b3=Button(ent, text='Search', width=10, command=(lambda:srch(e3.get(),ent,3)))
     b3.config(font=("Times New Roman", 15))
     b3.grid(row=2,column=2)
+    b4=Button(ent, text='Done', width=10, command=ent.destroy)
+    b4.config(font=("Times New Roman", 15))
+    b4.grid(row=3,column=2)
     
     Label(ent, text=' ').grid(row=2)
     Label(ent, text=' ').grid(row=3)
@@ -182,16 +193,43 @@ def search(self):
 #-------------------------------------------------------------------------------MODIFY
 
 #def bt_dest
-
+        
+def modname(name,newname,ent):
+    global cur
+    query='update `custgst` set `Name`=%s where `Name`=%s'
+    cur.execute(query,(newname,name))
+    srch(newname,ent,0)
+def modcity(name,city,ent):
+    global cur
+    query='update `custgst` set `City`=%s where `Name`=%s'
+    cur.execute(query,(city,name))
+    srch(city,ent,1)
+def modgstin(name,gst,ent):
+    global cur
+    query='update `custgst` set `GSTIN`=%s where `Name`=%s'
+    cur.execute(query,(gst,name))
+    srch(gst,ent,2)
+def modagent(name,agent,ent):
+    global cur
+    query='update `custgst` set `Agent`=%s where `Name`=%s'
+    cur.execute(query,(agent,name))
+    srch(agent,ent,3)
+def modcno(name,cno,ent):
+    global cur
+    query='update `custgst` set `Contact No.`=%s where `Name`=%s'
+    cur.execute(query,(cno,name))
+    srch(cno,ent,4)
 def check(name,ent):
     global cur
     #bt_dest()
     b1.destroy()
     row_count=cur.execute('select * from custgst where Name=%s',name)
     if(row_count==0):
-        l1=Label(ent, text='Record not found')
+        ent2=Tk()
+        ent2.title("!!")
+        l1=Label(ent2, text='Record not found')
         l1.config(font=("Times New Roman", 13))
-        l1.grid(row=2)
+        l1.pack()
     else:
         l1=Label(ent, text='New Name')
         l1.config(font=("Times New Roman", 15))
@@ -241,32 +279,6 @@ def check(name,ent):
         b6=Button(ent, text='Modify', command=lambda:modcno(name,e6.get(),ent))
         b6.config(font=("Times New Roman", 15))
         b6.grid(row=5,column=2)
-        
-def modname(name,newname,ent):
-    global cur
-    query='update `custgst` set `Name`=%s where `Name`=%s'
-    cur.execute(query,(newname,name))
-    srch(newname,ent)
-def modcity(name,city,ent):
-    global cur
-    query='update `custgst` set `City`=%s where `Name`=%s'
-    cur.execute(query,(city,name))
-    srch(name,ent)
-def modgstin(name,gst,ent):
-    global cur
-    query='update `custgst` set `GSTIN`=%s where `Name`=%s'
-    cur.execute(query,(gst,name))
-    srch(name,ent)
-def modagent(name,agent,ent):
-    global cur
-    query='update `custgst` set `Agent`=%s where `Name`=%s'
-    cur.execute(query,(agent,name))
-    srch(name,ent)
-def modcno(name,cno,ent):
-    global cur
-    query='update `custgst` set `Contact No.`=%s where `Name`=%s'
-    cur.execute(query,(cno,name))
-    srch(name,ent)
 def modify(self):
     ent=Tk()
     ent.title("Modify Record!")
@@ -281,7 +293,7 @@ def modify(self):
     
     b1=Button(ent, text='Enter', command=lambda:check(e1.get(),ent))
     b1.config(font=("Times New Roman", 15))
-    b1.grid(row=2,column=1)
+    b1.grid(row=1,column=4)
     #b1.destroy()
     
     #call=partial(modname,e1.get(),e2.get(),ent)
@@ -322,7 +334,7 @@ def remove(self):
     b2.grid(row=1,column=2)
     
 
-#----------------------------------------------------DISPLAY ALL
+#---------------------------------------------------------------DISPLAY ALL
 def displayall(self):
     ent=Tk()
     ent.title('All Records!')
